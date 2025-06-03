@@ -52,7 +52,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="hero-section mb-24 flex flex-col lg:flex-row items-center gap-12 bg-gradient-to-r from-purple-100 to-indigo-100 p-10 rounded-2xl shadow-md">
           <div className="w-full lg:w-1/2 text-center lg:text-left">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-purple-800">Hello, I'm Arpit</h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-purple-800">Hello, I&apos;m Arpit</h1>
             <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto lg:mx-0">
               Full Stack Developer with 6+ years of experience building modern, responsive web applications with Next.js and React.
             </p>
@@ -90,10 +90,10 @@ export default function Home() {
             <h2 className="text-3xl font-bold text-purple-800">About Me</h2>
             <h3 className="text-3xl font-medium text-gray-700">Full Stack Developer</h3>
             <p className="text-xl text-gray-700">
-              I'm a passionate web developer with 6+ years of experience, specializing in creating responsive and user-friendly web applications. My expertise spans both frontend and backend technologies.
+              I&apos;m a passionate web developer with 6+ years of experience, specializing in creating responsive and user-friendly web applications. My expertise spans both frontend and backend technologies.
             </p>
             <p className="text-xl text-gray-700">
-              I enjoy solving complex problems and turning ideas into elegant, efficient code. When I'm not coding, you'll find me exploring new technologies or contributing to open-source projects.
+              I enjoy solving complex problems and turning ideas into elegant, efficient code. When I&apos;m not coding, you&apos;ll find me exploring new technologies or contributing to open-source projects.
             </p>
             <div>
               <h4 className="text-xl font-medium mb-4 text-gray-700">Technical Skills</h4>
