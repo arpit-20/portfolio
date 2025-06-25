@@ -21,7 +21,7 @@ export default function Home() {
         <nav className="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-lg max-w-7xl mx-auto backdrop-blur-md bg-opacity-90">
           <div className="font-bold text-2xl text-white flex items-center gap-2">
             <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center text-purple-700 font-bold">A</div>
-            <span>My Portfolio</span>
+            <span>My Portfolio !</span>
           </div>
           <div className="flex gap-2 md:gap-6">
             <Link href="/" className="relative group px-3 py-2 text-white text-xl font-medium">
