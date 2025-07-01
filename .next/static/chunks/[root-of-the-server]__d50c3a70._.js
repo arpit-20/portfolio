@@ -814,7 +814,7 @@ function Blog() {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                     onClick: ()=>handleEdit(post),
-                                                    className: `transition-colors p-1 rounded-full ${post.isUserCreated ? 'text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50' : 'text-gray-300 cursor-not-allowed'}`,
+                                                    className: `transition-colors p-1 rounded-full ${post.isUserCreated ? 'text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 cursor-pointer' : 'text-gray-300 cursor-not-allowed'}`,
                                                     title: post.isUserCreated ? "Edit post" : "Cannot edit default posts",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                                         xmlns: "http://www.w3.org/2000/svg",
@@ -822,7 +822,7 @@ function Blog() {
                                                         viewBox: "0 0 24 24",
                                                         strokeWidth: 1.5,
                                                         stroke: "currentColor",
-                                                        className: "w-5 h-5",
+                                                        className: "w-6 h-6",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
                                                             strokeLinecap: "round",
                                                             strokeLinejoin: "round",
@@ -844,7 +844,7 @@ function Blog() {
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                     onClick: ()=>handleDelete(post.id),
-                                                    className: `transition-colors p-1 rounded-full ${post.isUserCreated ? 'text-red-500 hover:text-red-700 hover:bg-red-50' : 'text-gray-300 cursor-not-allowed'}`,
+                                                    className: `transition-colors p-1 rounded-full ${post.isUserCreated ? 'text-red-500 hover:text-red-700 hover:bg-red-50 cursor-pointer' : 'text-gray-300 cursor-not-allowed'}`,
                                                     title: post.isUserCreated ? "Delete post" : "Cannot delete default posts",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                                         xmlns: "http://www.w3.org/2000/svg",
@@ -852,7 +852,7 @@ function Blog() {
                                                         viewBox: "0 0 24 24",
                                                         strokeWidth: 1.5,
                                                         stroke: "currentColor",
-                                                        className: "w-5 h-5",
+                                                        className: "w-6 h-6",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
                                                             strokeLinecap: "round",
                                                             strokeLinejoin: "round",
