@@ -1,9 +1,9 @@
 __turbopack_load_page_chunks__("/blog", [
-  "static/chunks/node_modules_next_9a882e92._.js",
+  "static/chunks/node_modules_next_81546995._.js",
   "static/chunks/node_modules_react-dom_82bb97c6._.js",
   "static/chunks/node_modules_2a5cf4bb._.js",
   "static/chunks/[root-of-the-server]__d50c3a70._.js",
   "static/chunks/[next]_internal_font_google_37e236f2._.css",
   "static/chunks/src_pages_blog_index_5771e187.js",
-  "static/chunks/src_pages_blog_index_21549eb5.js"
+  "static/chunks/src_pages_blog_index_56d371c7.js"
 ])

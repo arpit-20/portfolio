@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Geist, Geist_Mono } from "next/font/google";
+import { useState, useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Mock blog post data - in a real app you might fetch this from an API or CMS
+// Default blog post data that will be merged with user-created posts
 const blogPosts = [
   {
     id: 0,
@@ -421,12 +422,44 @@ docker-compose up --build</code></pre>
 export default function BlogPost() {
   const router = useRouter();
   const { slug } = router.query;
+  const [post, setPost] = useState(null);
+  const [allPosts, setAllPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-  // Find the current post based on the slug
-  const post = blogPosts.find(post => post.slug === slug);
+  useEffect(() => {
+    // Only run this effect if we have a slug from the router
+    if (!slug) return;
+    
+    // Get user created posts from localStorage
+    let userPosts = [];
+    try {
+      const savedPosts = localStorage.getItem('blogPosts');
+      if (savedPosts) {
+        userPosts = JSON.parse(savedPosts);
+      }
+    } catch (error) {
+      console.error('Error loading blog posts from localStorage:', error);
+    }
+    
+    // Combine default posts with user posts
+    const highestId = blogPosts.reduce((max, post) => Math.max(max, post.id), 0);
+    const formattedUserPosts = userPosts.map((post, index) => ({
+      ...post,
+      id: highestId + index + 1
+    }));
+    
+    // Merge all posts
+    const allPostsData = [...blogPosts, ...formattedUserPosts];
+    setAllPosts(allPostsData);
+    
+    // Find the current post based on the slug
+    const currentPost = allPostsData.find(post => post.slug === slug);
+    setPost(currentPost);
+    setLoading(false);
+  }, [slug]);
   
   // Handle loading state
-  if (router.isFallback || !post) {
+  if (loading || !post) {
     return (
       <div className={`${geistSans.className} min-h-screen p-8 sm:p-16 max-w-6xl mx-auto bg-gradient-to-b from-purple-100/80 to-pink-50/80 bg-purple-50/20`}>
         <h1 className="text-3xl font-bold mb-6">Loading...</h1>
@@ -462,7 +495,7 @@ export default function BlogPost() {
           </span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {blogPosts
+          {allPosts
             .filter(p => p.slug !== slug)
             .slice(0, 2)
             .map(post => (

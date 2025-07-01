@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 
 export default function CreateBlog() {
   const router = useRouter();
+  const { edit, slug } = router.query;
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -25,6 +28,44 @@ export default function CreateBlog() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  
+  useEffect(() => {
+    if (edit && slug) {
+      // We're in edit mode
+      setIsEditMode(true);
+      setEditId(edit);
+      
+      // Load existing post data
+      try {
+        const savedPosts = localStorage.getItem('blogPosts');
+        if (savedPosts) {
+          const posts = JSON.parse(savedPosts);
+          
+          // Find the post by slug
+          const postToEdit = posts.find(post => post.slug === slug);
+          
+          if (postToEdit) {
+            // Format the date back to YYYY-MM-DD for the date input
+            const dateParts = new Date(postToEdit.date);
+            const formattedDate = dateParts instanceof Date && !isNaN(dateParts) 
+              ? dateParts.toISOString().split('T')[0] 
+              : new Date().toISOString().split('T')[0];
+            
+            setFormData({
+              title: postToEdit.title || '',
+              excerpt: postToEdit.excerpt || '',
+              date: formattedDate,
+              slug: postToEdit.slug || '',
+              featured: postToEdit.featured || false
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading post for editing:', error);
+        setFormError('Could not load post data for editing.');
+      }
+    }
+  }, [edit, slug]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -50,14 +91,59 @@ export default function CreateBlog() {
     setFormError("");
 
     try {
-      // In a real app, you'd submit this to an API endpoint
       console.log("Blog post data:", formData);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Redirect to blog index after "submission"
-      alert("Blog post created successfully!");
+      // Save to localStorage
+      const savedPosts = localStorage.getItem('blogPosts');
+      let postsArray = [];
+      
+      if (savedPosts) {
+        postsArray = JSON.parse(savedPosts);
+      }
+      
+      if (isEditMode) {
+        // Update existing post
+        const formattedDate = new Date(formData.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        // Find and update the post
+        postsArray = postsArray.map(post => {
+          // Match by slug to identify the post to update
+          if (post.slug === slug) {
+            return {
+              ...post,
+              ...formData,
+              date: formattedDate
+            };
+          }
+          return post;
+        });
+        
+        localStorage.setItem('blogPosts', JSON.stringify(postsArray));
+        alert("Blog post updated successfully!");
+      } else {
+        // Add the new post with a timestamp
+        postsArray.push({
+          ...formData,
+          id: Date.now(), // Use timestamp as a unique ID
+          date: new Date(formData.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
+        });
+        
+        localStorage.setItem('blogPosts', JSON.stringify(postsArray));
+        alert("Blog post created successfully!");
+      }
+      
+      // Redirect to blog index after submission
       router.push("/blog");
     } catch (error) {
       setFormError("Something went wrong. Please try again.");
@@ -71,8 +157,8 @@ export default function CreateBlog() {
     <div className={`${geistSans.className} ${geistMono.className} min-h-screen p-8 sm:p-16 max-w-6xl mx-auto bg-gradient-to-b from-purple-50/70 to-pink-50/60 bg-purple-25/10`}>
       <header className="mb-8 py-2 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-lg text-white flex flex-wrap items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-0">Create New Blog Post</h1>
-          <p className="text-sm text-purple-100">Add a new post to your collection</p>
+          <h1 className="text-2xl font-bold mb-0">{isEditMode ? 'Edit Blog Post' : 'Create New Blog Post'}</h1>
+          <p className="text-sm text-purple-100">{isEditMode ? 'Update your existing post' : 'Add a new post to your collection'}</p>
         </div>
         <Link href="/blog" className="text-white hover:text-purple-200 font-medium flex items-center gap-1 group">
           <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span> Back to Blog
@@ -181,7 +267,7 @@ export default function CreateBlog() {
                 isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-1"
               }`}
             >
-              {isSubmitting ? "Creating..." : "Create Post"}
+              {isSubmitting ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update Post" : "Create Post")}
             </button>
           </div>
         </form>

@@ -27,6 +27,15 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/src_pages_blog_index_5771e187.js",
       "static/chunks/src_pages_blog_index_21549eb5.js"
     ],
+    "/blog/[slug]": [
+      "static/chunks/node_modules_next_81546995._.js",
+      "static/chunks/node_modules_react-dom_82bb97c6._.js",
+      "static/chunks/node_modules_2a5cf4bb._.js",
+      "static/chunks/[root-of-the-server]__6afe1b00._.js",
+      "static/chunks/[next]_internal_font_google_1320b694._.css",
+      "static/chunks/src_pages_blog_[slug]_5771e187.js",
+      "static/chunks/src_pages_blog_[slug]_01ed9fc0.js"
+    ],
     "/blog/create": [
       "static/chunks/node_modules_next_81546995._.js",
       "static/chunks/node_modules_react-dom_82bb97c6._.js",

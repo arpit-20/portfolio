@@ -3,5 +3,6 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/blog": "pages/blog.js",
+  "/blog/[slug]": "pages/blog/[slug].js",
   "/blog/create": "pages/blog/create.js"
 }

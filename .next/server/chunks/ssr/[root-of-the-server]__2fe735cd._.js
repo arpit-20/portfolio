@@ -74,11 +74,13 @@ var __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$run
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/link.js [ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$next$5d2f$internal$2f$font$2f$google$2f$geist_b6f6e40c$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[next]/internal/font/google/geist_b6f6e40c.js [ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$next$5d2f$internal$2f$font$2f$google$2f$geist_mono_5fbb1682$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[next]/internal/font/google/geist_mono_5fbb1682.js [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/react [external] (react, cjs)");
 ;
 ;
 ;
 ;
-// Mock blog post data - in a real app you might fetch this from an API or CMS
+;
+// Default blog post data that will be merged with user-created posts
 const blogPosts = [
     {
         id: 1,
@@ -119,6 +121,32 @@ const blogPosts = [
     }
 ];
 function Blog() {
+    const [allPosts, setAllPosts] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
+    (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
+        // Get user created posts from localStorage
+        let userPosts = [];
+        try {
+            const savedPosts = localStorage.getItem('blogPosts');
+            if (savedPosts) {
+                userPosts = JSON.parse(savedPosts);
+            }
+        } catch (error) {
+            console.error('Error loading blog posts from localStorage:', error);
+        }
+        // Combine default posts with user posts, giving user posts higher IDs
+        // and avoiding duplicate slugs
+        const highestId = blogPosts.reduce((max, post)=>Math.max(max, post.id), 0);
+        const formattedUserPosts = userPosts.map((post, index)=>({
+                ...post,
+                id: highestId + index + 1
+            }));
+        // Merge and sort by date (newest first)
+        const merged = [
+            ...blogPosts,
+            ...formattedUserPosts
+        ].sort((a, b)=>new Date(b.date) - new Date(a.date));
+        setAllPosts(merged);
+    }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
         className: `${__TURBOPACK__imported__module__$5b$next$5d2f$internal$2f$font$2f$google$2f$geist_b6f6e40c$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].className} ${__TURBOPACK__imported__module__$5b$next$5d2f$internal$2f$font$2f$google$2f$geist_mono_5fbb1682$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"].className} min-h-screen p-8 sm:p-16 max-w-6xl mx-auto bg-gradient-to-b from-purple-50/70 to-pink-50/60 bg-purple-25/10`,
         children: [
@@ -132,7 +160,7 @@ function Blog() {
                                 children: "Blog"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/blog/index.js",
-                                lineNumber: 60,
+                                lineNumber: 91,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -140,13 +168,13 @@ function Blog() {
                                 children: "Thoughts, ideas, and tutorials"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/blog/index.js",
-                                lineNumber: 61,
+                                lineNumber: 92,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/blog/index.js",
-                        lineNumber: 59,
+                        lineNumber: 90,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -161,14 +189,14 @@ function Blog() {
                                         children: "+"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/blog/index.js",
-                                        lineNumber: 68,
+                                        lineNumber: 99,
                                         columnNumber: 13
                                     }, this),
                                     " Create Blog"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/blog/index.js",
-                                lineNumber: 64,
+                                lineNumber: 95,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -180,32 +208,32 @@ function Blog() {
                                         children: "←"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/blog/index.js",
-                                        lineNumber: 71,
+                                        lineNumber: 102,
                                         columnNumber: 13
                                     }, this),
                                     " Back to Home"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/blog/index.js",
-                                lineNumber: 70,
+                                lineNumber: 101,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/blog/index.js",
-                        lineNumber: 63,
+                        lineNumber: 94,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/pages/blog/index.js",
-                lineNumber: 58,
+                lineNumber: 89,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("main", {
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                     className: "space-y-10",
-                    children: blogPosts.map((post)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("article", {
+                    children: allPosts.map((post)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("article", {
                             className: `border ${post.featured ? 'border-purple-400 bg-gradient-to-br from-white to-purple-50' : 'border-purple-200 bg-white'} rounded-lg p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative`,
                             children: [
                                 post.featured && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -213,7 +241,7 @@ function Blog() {
                                     children: "Featured"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 81,
+                                    lineNumber: 112,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("h2", {
@@ -224,12 +252,12 @@ function Blog() {
                                         children: post.title
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/blog/index.js",
-                                        lineNumber: 86,
+                                        lineNumber: 117,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 85,
+                                    lineNumber: 116,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -237,7 +265,7 @@ function Blog() {
                                     children: post.date
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 90,
+                                    lineNumber: 121,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -245,7 +273,7 @@ function Blog() {
                                     children: post.excerpt
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 91,
+                                    lineNumber: 122,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -260,34 +288,34 @@ function Blog() {
                                                 children: "→"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/blog/index.js",
-                                                lineNumber: 97,
+                                                lineNumber: 128,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/blog/index.js",
-                                        lineNumber: 93,
+                                        lineNumber: 124,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 92,
+                                    lineNumber: 123,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, post.id, true, {
                             fileName: "[project]/src/pages/blog/index.js",
-                            lineNumber: 79,
+                            lineNumber: 110,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/pages/blog/index.js",
-                    lineNumber: 77,
+                    lineNumber: 108,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/blog/index.js",
-                lineNumber: 76,
+                lineNumber: 107,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("footer", {
@@ -300,18 +328,18 @@ function Blog() {
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/blog/index.js",
-                    lineNumber: 106,
+                    lineNumber: 137,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/blog/index.js",
-                lineNumber: 105,
+                lineNumber: 136,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/blog/index.js",
-        lineNumber: 57,
+        lineNumber: 88,
         columnNumber: 5
     }, this);
 }
