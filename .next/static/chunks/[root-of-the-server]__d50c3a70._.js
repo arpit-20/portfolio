@@ -611,28 +611,49 @@ function Blog() {
                         lineNumber: 59,
                         columnNumber: 9
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
-                        className: "",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
-                            href: "/",
-                            className: "text-white hover:text-purple-200 font-medium flex items-center gap-1 w-fit group text-xl",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "group-hover:-translate-x-1 transition-transform duration-300",
-                                    children: "←"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 65,
-                                    columnNumber: 13
-                                }, this),
-                                " Back to Home"
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/blog/index.js",
-                            lineNumber: 64,
-                            columnNumber: 11
-                        }, this)
-                    }, void 0, false, {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex items-center gap-4",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                                href: "/blog/create",
+                                className: "bg-white text-purple-600 hover:bg-purple-100 px-4 py-2 rounded-lg font-medium shadow-md transition-all duration-300 hover:-translate-y-1 flex items-center gap-1",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "text-lg",
+                                        children: "+"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/blog/index.js",
+                                        lineNumber: 68,
+                                        columnNumber: 13
+                                    }, this),
+                                    " Create Blog"
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/blog/index.js",
+                                lineNumber: 64,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                                href: "/",
+                                className: "text-white hover:text-purple-200 font-medium flex items-center gap-1 w-fit group text-xl",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "group-hover:-translate-x-1 transition-transform duration-300",
+                                        children: "←"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/blog/index.js",
+                                        lineNumber: 71,
+                                        columnNumber: 13
+                                    }, this),
+                                    " Back to Home"
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/blog/index.js",
+                                lineNumber: 70,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/pages/blog/index.js",
                         lineNumber: 63,
                         columnNumber: 9
@@ -654,7 +675,7 @@ function Blog() {
                                     children: "Featured"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 75,
+                                    lineNumber: 81,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -665,12 +686,12 @@ function Blog() {
                                         children: post.title
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/blog/index.js",
-                                        lineNumber: 80,
+                                        lineNumber: 86,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 79,
+                                    lineNumber: 85,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -678,7 +699,7 @@ function Blog() {
                                     children: post.date
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 84,
+                                    lineNumber: 90,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -686,7 +707,7 @@ function Blog() {
                                     children: post.excerpt
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 85,
+                                    lineNumber: 91,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -701,34 +722,34 @@ function Blog() {
                                                 children: "→"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/blog/index.js",
-                                                lineNumber: 91,
+                                                lineNumber: 97,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/blog/index.js",
-                                        lineNumber: 87,
+                                        lineNumber: 93,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/blog/index.js",
-                                    lineNumber: 86,
+                                    lineNumber: 92,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, post.id, true, {
                             fileName: "[project]/src/pages/blog/index.js",
-                            lineNumber: 73,
+                            lineNumber: 79,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/pages/blog/index.js",
-                    lineNumber: 71,
+                    lineNumber: 77,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/blog/index.js",
-                lineNumber: 70,
+                lineNumber: 76,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -741,12 +762,12 @@ function Blog() {
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/blog/index.js",
-                    lineNumber: 100,
+                    lineNumber: 106,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/blog/index.js",
-                lineNumber: 99,
+                lineNumber: 105,
                 columnNumber: 7
             }, this)
         ]

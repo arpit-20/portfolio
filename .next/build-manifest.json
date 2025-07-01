@@ -26,6 +26,15 @@
       "static/chunks/[next]_internal_font_google_37e236f2._.css",
       "static/chunks/src_pages_blog_index_5771e187.js",
       "static/chunks/src_pages_blog_index_21549eb5.js"
+    ],
+    "/blog/create": [
+      "static/chunks/node_modules_next_81546995._.js",
+      "static/chunks/node_modules_react-dom_82bb97c6._.js",
+      "static/chunks/node_modules_2a5cf4bb._.js",
+      "static/chunks/[root-of-the-server]__421a0269._.js",
+      "static/chunks/[next]_internal_font_google_cb689754._.css",
+      "static/chunks/src_pages_blog_create_5771e187.js",
+      "static/chunks/src_pages_blog_create_b52a2a7a.js"
     ]
   },
   "devFiles": [],

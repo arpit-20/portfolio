@@ -60,11 +60,17 @@ export default function Blog() {
           <h1 className="text-2xl font-bold mb-0">Blog</h1>
           <p className="text-sm text-purple-100">Thoughts, ideas, and tutorials</p>
         </div>
-        <nav className="">
+        <div className="flex items-center gap-4">
+          <Link 
+            href="/blog/create" 
+            className="bg-white text-purple-600 hover:bg-purple-100 px-4 py-2 rounded-lg font-medium shadow-md transition-all duration-300 hover:-translate-y-1 flex items-center gap-1"
+          >
+            <span className="text-lg">+</span> Create Blog
+          </Link>
           <Link href="/" className="text-white hover:text-purple-200 font-medium flex items-center gap-1 w-fit group text-xl">
             <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span> Back to Home
           </Link>
-        </nav>
+        </div>
       </header>
 
       <main>

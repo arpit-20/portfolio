@@ -453,6 +453,7 @@ export default function BlogPost() {
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </article>
+
       
       <div className="mt-12 pt-8 border-t border-purple-200">
         <h3 className="font-bold text-xl mb-6 text-purple-800 inline-block relative">
