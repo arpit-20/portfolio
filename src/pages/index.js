@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,6 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export default function Home() {
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const { user, login, logout } = useAuth();
+
+  const handleLoginClick = () => {
+    setShowLoginForm(!showLoginForm);
+  };
+
   return (
     <div
       className={`${geistSans.className} ${geistMono.className} min-h-screen p-8 pb-20 sm:p-16 font-[family-name:var(--font-geist-sans)] bg-gradient-to-b from-purple-50/70 to-pink-50/60 bg-purple-25/10`}
@@ -44,9 +53,44 @@ export default function Home() {
               <span>Contact</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all group-hover:w-full"></span>
             </a>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={logout} 
+                  className="bg-white text-purple-700 hover:bg-gray-100 px-4 py-1 rounded-md transition-colors shadow-md"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={handleLoginClick} 
+                className="bg-white text-purple-700 hover:bg-gray-100 px-4 py-1 rounded-md transition-colors shadow-md"
+              >
+                Login
+              </button>
+            )}
           </div>
         </nav>
       </header>
+
+      {/* Login Form Popup */}
+      {showLoginForm && !user && (
+        <div className="fixed inset-0 backdrop-blur-md bg-purple-600/20 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all border border-purple-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-purple-800">Welcome Back</h2>
+              <button 
+                onClick={() => setShowLoginForm(false)}
+                className="text-purple-500 hover:text-purple-700 text-2xl focus:outline-none"
+              >
+                ×
+              </button>
+            </div>
+            <LoginForm onClose={() => setShowLoginForm(false)} />
+          </div>
+        </div>
+      )}
 
       <main className="max-w-7xl mx-auto px-6">
         {/* Hero Section */}
@@ -204,5 +248,76 @@ export default function Home() {
         <p>© {new Date().getFullYear()} My Portfolio. All rights reserved.</p>
       </footer>
     </div>
+  );
+}
+
+function LoginForm({ onClose }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    
+    try {
+      await login(username, password);
+      onClose();
+    } catch (err) {
+      setError(err.message || 'Failed to login');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+          {error}
+        </div>
+      )}
+      
+      <div>
+        <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+          Username
+        </label>
+        <input
+          id="username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full px-4 py-2 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/80"
+          required
+          placeholder="Enter your username"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-4 py-2 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/80"
+          required
+          placeholder="Enter your password"
+        />
+      </div>
+      
+      <div className="flex items-center justify-end pt-2">
+        <button
+          type="submit"
+          className="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 shadow-md hover:shadow-lg transition-all"
+        >
+          Login
+        </button>
+      </div>
+      <div className="text-center text-xs text-gray-500 mt-4">
+        <p>You can use your email and password to login</p>
+      </div>
+    </form>
   );
 }

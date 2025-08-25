@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Geist, Geist_Mono } from "next/font/google";
+import { useAuth } from "@/contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,44 +29,112 @@ export default function CreateBlog() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const { getAuthHeader, isAdmin } = useAuth();
   
+  // Only fetch data when router is ready and we have query params
   useEffect(() => {
+    // Redirect if not admin
+    if (!isAdmin()) {
+      router.push("/blog");
+      return;
+    }
+    
+    // Only proceed if router is ready and we have query params
+    if (!router.isReady) return;
+    
     if (edit && slug) {
       // We're in edit mode
       setIsEditMode(true);
       setEditId(edit);
       
-      // Load existing post data
-      try {
-        const savedPosts = localStorage.getItem('blogPosts');
-        if (savedPosts) {
-          const posts = JSON.parse(savedPosts);
+      // Track if component is mounted
+      let isMounted = true;
+      const controller = new AbortController();
+      
+      // Check for cached data first
+      const cacheKey = `blogPost_${slug}`;
+      const cachedPost = sessionStorage.getItem(cacheKey);
+      const cachedTimestamp = sessionStorage.getItem(`${cacheKey}_timestamp`);
+      const now = new Date().getTime();
+      const cacheExpiry = 60000; // 1 minute cache expiry
+      
+      // Load existing post data from MongoDB
+      const fetchPost = async () => {
+        // If we have valid cached data, use it first
+        if (cachedPost && cachedTimestamp && (now - parseInt(cachedTimestamp)) < cacheExpiry) {
+          const postToEdit = JSON.parse(cachedPost);
           
-          // Find the post by slug
-          const postToEdit = posts.find(post => post.slug === slug);
-          
-          if (postToEdit) {
-            // Format the date back to YYYY-MM-DD for the date input
-            const dateParts = new Date(postToEdit.date);
-            const formattedDate = dateParts instanceof Date && !isNaN(dateParts) 
-              ? dateParts.toISOString().split('T')[0] 
-              : new Date().toISOString().split('T')[0];
-            
-            setFormData({
+          if (isMounted) {
+            const formattedPost = {
               title: postToEdit.title || '',
               excerpt: postToEdit.excerpt || '',
-              date: formattedDate,
+              content: postToEdit.content || '',
+              date: postToEdit.date ? new Date(postToEdit.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
               slug: postToEdit.slug || '',
               featured: postToEdit.featured || false
-            });
+            };
+            
+            setFormData(formattedPost);
+          }
+          return;
+        }
+        
+        try {
+          // Add a small delay to prevent race conditions
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          const response = await fetch(`/api/blog/${slug}`, {
+            signal: controller.signal,
+            headers: {
+              ...getAuthHeader()
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch post data');
+          }
+          
+          const { success, data, error } = await response.json();
+          
+          if (!success) {
+            throw new Error(error || 'Failed to load post data');
+          }
+          
+          const postToEdit = data;
+          
+          if (isMounted) {
+            const formattedPost = {
+              title: postToEdit.title || '',
+              excerpt: postToEdit.excerpt || '',
+              content: postToEdit.content || '',
+              date: postToEdit.date ? new Date(postToEdit.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+              slug: postToEdit.slug || '',
+              featured: postToEdit.featured || false
+            };
+            
+            setFormData(formattedPost);
+            
+            // Cache the post data
+            sessionStorage.setItem(cacheKey, JSON.stringify(postToEdit));
+            sessionStorage.setItem(`${cacheKey}_timestamp`, now.toString());
+          }
+        } catch (error) {
+          if (error.name !== 'AbortError' && isMounted) {
+            console.error('Error loading post for editing:', error);
+            setFormError('Could not load post data for editing.');
           }
         }
-      } catch (error) {
-        console.error('Error loading post for editing:', error);
-        setFormError('Could not load post data for editing.');
-      }
+      };
+      
+      fetchPost();
+      
+      // Clean up function
+      return () => {
+        isMounted = false;
+        controller.abort();
+      };
     }
-  }, [edit, slug]);
+  }, [router.isReady, edit, slug, router, isAdmin, getAuthHeader]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -91,62 +160,48 @@ export default function CreateBlog() {
     setFormError("");
 
     try {
-      console.log("Blog post data:", formData);
+      // Format the submission data
+      const submissionData = {
+        ...formData,
+        date: new Date(formData.date) // Send as proper date object
+      };
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Save to localStorage
-      const savedPosts = localStorage.getItem('blogPosts');
-      let postsArray = [];
-      
-      if (savedPosts) {
-        postsArray = JSON.parse(savedPosts);
-      }
+      let response;
       
       if (isEditMode) {
-        // Update existing post
-        const formattedDate = new Date(formData.date).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
+        // Update existing post via API
+        response = await fetch(`/api/blog/${slug}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeader()
+          },
+          body: JSON.stringify(submissionData),
         });
-        
-        // Find and update the post
-        postsArray = postsArray.map(post => {
-          // Match by slug to identify the post to update
-          if (post.slug === slug) {
-            return {
-              ...post,
-              ...formData,
-              date: formattedDate
-            };
-          }
-          return post;
-        });
-        
-        localStorage.setItem('blogPosts', JSON.stringify(postsArray));
-        alert("Blog post updated successfully!");
       } else {
-        // Add the new post with a timestamp
-        postsArray.push({
-          ...formData,
-          id: Date.now(), // Use timestamp as a unique ID
-          date: new Date(formData.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })
+        // Create new post via API
+        response = await fetch('/api/blog', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeader()
+          },
+          body: JSON.stringify(submissionData),
         });
-        
-        localStorage.setItem('blogPosts', JSON.stringify(postsArray));
-        alert("Blog post created successfully!");
+      }
+
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Error saving blog post');
       }
       
-      // Redirect to blog index after submission
+      alert(isEditMode ? "Blog post updated successfully!" : "Blog post created successfully!");
+      
+      // Redirect to blog index after successful submission
       router.push("/blog");
     } catch (error) {
-      setFormError("Something went wrong. Please try again.");
+      setFormError(error.message || "Something went wrong. Please try again.");
       console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
@@ -154,128 +209,116 @@ export default function CreateBlog() {
   };
 
   return (
-    <div className={`${geistSans.className} ${geistMono.className} min-h-screen p-8 sm:p-16 max-w-6xl mx-auto bg-gradient-to-b from-purple-50/70 to-pink-50/60 bg-purple-25/10`}>
+    <div className={`${geistSans.className} ${geistMono.className} min-h-screen p-8 sm:p-16  mx-auto bg-gradient-to-b from-purple-50/70 to-pink-50/60 bg-purple-25/10`}>
       <header className="mb-8 py-2 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-lg text-white flex flex-wrap items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-0">{isEditMode ? 'Edit Blog Post' : 'Create New Blog Post'}</h1>
-          <p className="text-sm text-purple-100">{isEditMode ? 'Update your existing post' : 'Add a new post to your collection'}</p>
+          <h1 className="text-2xl font-bold">{isEditMode ? "Edit Blog Post" : "Create New Blog Post"}</h1>
         </div>
-        <Link href="/blog" className="text-white hover:text-purple-200 font-medium flex items-center gap-1 group">
+        <Link href="/blog" className="text-white hover:text-gray-200 font-medium flex items-center gap-1 w-fit group transition-all">
           <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span> Back to Blog
         </Link>
       </header>
-
-      <main className="bg-white rounded-xl shadow-lg p-8 mb-10">
-        {formError && (
-          <div className="bg-red-50 text-red-700 p-4 mb-6 rounded-lg border border-red-200">
-            {formError}
-          </div>
-        )}
+      
+      {formError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 mb-6 rounded-lg">
+          {formError}
+        </div>
+      )}
+      
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="mb-4">
+          <label htmlFor="title" className="block text-gray-700 font-medium mb-2">Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            placeholder="Enter blog title"
+          />
+        </div>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="title" className="block text-gray-700 font-medium">
-              Title <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="e.g., Building a Portfolio with Next.js"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="excerpt" className="block text-gray-700 font-medium">
-              Excerpt <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="excerpt"
-              name="excerpt"
-              value={formData.excerpt}
-              onChange={handleChange}
-              rows="3"
-              className="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="e.g., A guide to creating an impressive developer portfolio using Next.js."
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="date" className="block text-gray-700 font-medium">
-              Date <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="slug" className="block text-gray-700 font-medium">
-              Slug <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="slug"
-              name="slug"
-              value={formData.slug}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="e.g., building-portfolio-with-nextjs"
-              required
-            />
-            <p className="text-gray-500 text-sm">
-              URL-friendly version of the title (auto-generated, but you can edit it)
-            </p>
-          </div>
-          
-          <div className="flex items-center space-x-2">
+        <div className="mb-4">
+          <label htmlFor="slug" className="block text-gray-700 font-medium mb-2">Slug (URL-friendly identifier)</label>
+          <input
+            type="text"
+            id="slug"
+            name="slug"
+            value={formData.slug}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            placeholder="url-friendly-slug"
+          />
+          <p className="text-gray-500 text-sm mt-1">Auto-generated from title, but you can edit it.</p>
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="excerpt" className="block text-gray-700 font-medium mb-2">Excerpt</label>
+          <textarea
+            id="excerpt"
+            name="excerpt"
+            value={formData.excerpt}
+            onChange={handleChange}
+            required
+            rows="3"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            placeholder="Brief summary of your blog post"
+          ></textarea>
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="content" className="block text-gray-700 font-medium mb-2">Content</label>
+          <textarea
+            id="content"
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
+            required
+            rows="10"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            placeholder="Write your blog post content here..."
+          ></textarea>
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="date" className="block text-gray-700 font-medium mb-2">Date</label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+        </div>
+        
+        <div className="mb-6">
+          <label className="flex items-center">
             <input
               type="checkbox"
-              id="featured"
               name="featured"
               checked={formData.featured}
               onChange={handleChange}
               className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
             />
-            <label htmlFor="featured" className="text-gray-700">
-              Mark as featured post
-            </label>
-          </div>
-
-          <div className="pt-4 flex justify-end gap-4">
-            <Link 
-              href="/blog" 
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg text-white font-medium shadow-md hover:shadow-lg transition-all duration-300 ${
-                isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:-translate-y-1"
-              }`}
-            >
-              {isSubmitting ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update Post" : "Create Post")}
-            </button>
-          </div>
-        </form>
-      </main>
-
-      <footer className="pt-8 border-t border-purple-200 text-center text-purple-600 bg-gradient-to-r from-purple-50 to-indigo-50 py-6 rounded-xl">
-        <p>© {new Date().getFullYear()} My Portfolio Blog</p>
-      </footer>
+            <span className="ml-2 text-gray-700">Featured post</span>
+          </label>
+        </div>
+        
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+          >
+            {isSubmitting ? 'Saving...' : isEditMode ? 'Update Post' : 'Create Post'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

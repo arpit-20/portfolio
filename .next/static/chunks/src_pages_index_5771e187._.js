@@ -1,10 +1,15 @@
 (globalThis.TURBOPACK_CHUNK_LISTS = globalThis.TURBOPACK_CHUNK_LISTS || []).push({
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
-  "static/chunks/node_modules_next_e2783ff4._.js",
+  "static/chunks/node_modules_next_dist_compiled_crypto-browserify_index_429dd119.js",
+  "static/chunks/node_modules_next_dist_compiled_f434bb52._.js",
+  "static/chunks/node_modules_next_dist_shared_lib_e5bfb612._.js",
+  "static/chunks/node_modules_next_dist_client_677c5f4b._.js",
+  "static/chunks/node_modules_next_dist_f42e3743._.js",
+  "static/chunks/node_modules_next_b921408f._.js",
   "static/chunks/node_modules_react-dom_82bb97c6._.js",
-  "static/chunks/node_modules_2a5cf4bb._.js",
-  "static/chunks/[root-of-the-server]__dc344f2f._.js",
+  "static/chunks/node_modules_a8390b43._.js",
+  "static/chunks/[root-of-the-server]__5cb71007._.js",
   "static/chunks/[next]_internal_font_google_37e236f2._.css"
 ],
     source: "entry"
